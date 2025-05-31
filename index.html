@@ -222,7 +222,6 @@
         
         /* Στυλ για τα κονφετί */
         .confetti {
-            confetti.style.top = '-20px';
             position: fixed;
             width: 12px;
             height: 12px;
@@ -801,6 +800,7 @@
                     } else {
                         this.sounds.win();
                         this.showModal('Νίκη!', `Ο παίκτης ${this.currentPlayer} κέρδισε!`);
+                        this.createConfetti();
                         this.trackGameEvent('game_end', { result: 'player_win', winner: this.currentPlayer });
                     }
                 }
@@ -829,12 +829,13 @@
             // Δημιουργία κονφετί
             createConfetti() {
                 const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#f0932b', '#eb4d4b', '#6c5ce7'];
-                confetti.style.top = '-20px';
+                
                 for (let i = 0; i < 50; i++) {
                     setTimeout(() => {
                         const confetti = document.createElement('div');
                         confetti.className = 'confetti';
                         confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.top = '-20px';
                         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                         confetti.style.animationDelay = Math.random() * 3 + 's';
                         confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
@@ -903,14 +904,14 @@
                 this.drawsScore.textContent = this.scores.draws;
             },
             
-            // Αρχική απόδοση
+            // Render αρχικής κατάστασης
             render() {
                 this.updateStatus();
                 this.updateScoreboard();
             }
         };
         
-        // Αρχικοποίηση παιχνιδιού όταν φορτώσει η σελίδα
+        // Αρχικοποίηση παιχνιδιού όταν φορτώνεται η σελίδα
         document.addEventListener('DOMContentLoaded', () => {
             Game.init();
         });
