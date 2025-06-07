@@ -14,10 +14,11 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 20px 0;
             background:white;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
@@ -31,6 +32,7 @@
             max-width: 500px;
             width: 100%;
             position: relative;
+            flex: 1;
         }
 
         .sound-toggle {
@@ -781,6 +783,10 @@
         if (gameState.gameMode === 'player') {
             document.querySelector('.settings .setting-row:nth-child(4)').style.display = 'none';
         }
+        
+    <footer class="site-footer">
+        <p>&copy; Dimitrios Gallis 2025 – All rights reserved.</p>
+    </footer>
 </script>   
 </body>
 </html>
