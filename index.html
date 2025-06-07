@@ -301,6 +301,14 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
+        .site-footer {
+              width: 100%;
+              text-align: center;
+              background-color: #1e293b;
+              color: white;
+              padding: 15px 0;
+              font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -773,11 +781,11 @@
         if (gameState.gameMode === 'player') {
             document.querySelector('.settings .setting-row:nth-child(4)').style.display = 'none';
         }
-     <div>
-     <footer>
-            <p>&copy; Dimitrios Gallis 2025 – All rights reserved.</p>
-     </footer>
-     </div>
-    </script>   
+</script>   
+<div>
+<footer class="site-footer">
+          <p>&copy; Dimitrios Gallis 2025 – All rights reserved.</p>
+</footer>
+</div>
 </body>
 </html>
