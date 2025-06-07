@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Τρίλιζα - Tic Tac Toe</title>
     
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MVJ9S41FD9"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-MVJ9S41FD9');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID'); // Αντικατάστησε με το δικό σου Measurement ID
+    </script>
     
     <style>
         /* Βασικό στυλ σελίδας */
@@ -26,6 +24,10 @@
             margin: 0 auto;
             min-height: 100vh;
             box-sizing: border-box;
+            display: flex; /* Για κεντράρισμα του game-container */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
         /* Στυλ για τον τίτλο */
@@ -41,6 +43,13 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
+            background-color: #ffffff; /* Απλό λευκό background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
         }
         
         /* Περιοχή ρυθμίσεων */
@@ -245,7 +254,7 @@
             }
         }
         
-        /* Modal για μηνύματα */
+        /* Modal container */
         .modal {
             display: none;
             position: fixed;
@@ -256,11 +265,12 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
         }
         
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto;
             padding: 30px;
             border: none;
             border-radius: 15px;
@@ -268,6 +278,9 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             animation: modalSlideIn 0.3s ease-out;
+            display: flex; 
+            flex-direction: column;
+            gap: 15px; 
         }
         
         @keyframes modalSlideIn {
@@ -291,6 +304,56 @@
             color: #7f8c8d;
             font-size: clamp(1rem, 3vw, 1.2rem);
             margin-bottom: 25px;
+        }
+
+        .modal-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; 
+            gap: 5px;
+            width: 100%; 
+            margin-bottom: 10px; 
+        }
+
+        .modal-input-group label {
+            font-weight: bold;
+            color: #555;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .modal-input-group input[type="text"] {
+            width: calc(100% - 20px); 
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box; 
+        }
+
+        .first-player-select {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap; 
+        }
+
+        .first-player-select .player-choice-btn {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            border: 2px solid #3498db;
+            background-color: white;
+            color: #3498db;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .first-player-select .player-choice-btn.active {
+            background-color: #3498db;
+            color: white;
         }
         
         .modal-btn {
@@ -375,6 +438,16 @@
                 height: 40px;
                 font-size: 16px;
             }
+
+            .modal-btn {
+                margin: 5px auto; 
+                width: calc(100% - 20px); 
+            }
+
+            .first-player-select {
+                flex-direction: column;
+                align-items: center;
+            }
         }
         
         @media (max-width: 400px) {
@@ -391,15 +464,9 @@
                 padding: 20px;
             }
         }
-        footer {
-            color:black;
-            text-align:center;
-            padding: 15px 0;
-        }
     </style>
 </head>
 <body>
-    <!-- Audio Controls -->
     <div class="audio-controls">
         <button class="audio-toggle" id="audioToggle" title="Ενεργοποίηση/Απενεργοποίηση ήχου">🔊</button>
     </div>
@@ -428,7 +495,7 @@
                 <div class="option-label">Δυσκολία:</div>
                 <div class="difficulty-select">
                     <button class="difficulty-btn" data-difficulty="easy">Εύκολο</button>
-                    <button class="difficulty-btn active" data-difficulty="medium">Μεσαίο</button>
+                    <button class="difficulty-btn" data-difficulty="medium">Μεσαίο</button>
                     <button class="difficulty-btn" data-difficulty="hard">Δύσκολο</button>
                 </div>
             </div>
@@ -437,11 +504,11 @@
         <div class="scoreboard">
             <div class="score-item">
                 <div class="score-value" id="player-x-score">0</div>
-                <div class="score-label">Παίκτης X</div>
+                <div class="score-label" id="player-x-label">Παίκτης X</div>
             </div>
             <div class="score-item">
                 <div class="score-value" id="player-o-score">0</div>
-                <div class="score-label">Παίκτης O</div>
+                <div class="score-label" id="player-o-label">Παίκτης O</div>
             </div>
             <div class="score-item">
                 <div class="score-value" id="draws">0</div>
@@ -466,24 +533,46 @@
         <button class="btn" id="restart-btn">Νέο Παιχνίδι</button>
     </div>
     
-    <!-- Modal για μηνύματα -->
-    <div id="gameModal" class="modal">
+    <div id="gameEndModal" class="modal">
         <div class="modal-content">
-            <h2 id="modalTitle"></h2>
-            <p id="modalMessage"></p>
+            <h2 id="gameEndModalTitle"></h2>
+            <p id="gameEndModalMessage"></p>
             <button class="modal-btn" id="newGameBtn">Νέο Παιχνίδι</button>
             <button class="modal-btn secondary" id="continueBtn">Συνέχεια</button>
         </div>
     </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2>Ρυθμίσεις Παιχνιδιού</h2>
+            
+            <div class="modal-input-group">
+                <label for="playerXName">Όνομα Παίκτη X:</label>
+                <input type="text" id="playerXName" value="Παίκτης X" maxlength="15">
+            </div>
+            
+            <div class="modal-input-group" id="playerONameGroup">
+                <label for="playerOName">Όνομα Παίκτη O:</label>
+                <input type="text" id="playerOName" value="Παίκτης O" maxlength="15">
+            </div>
+
+            <div class="modal-input-group" id="firstPlayerSelectionGroup" style="display: none;">
+                <label>Ποιος θα παίξει πρώτος;</label>
+                <div class="first-player-select">
+                    <button class="player-choice-btn active" data-player-type="player">Εγώ (<span id="mySymbolChoice">X</span>)</button>
+                    <button class="player-choice-btn" data-player-type="opponent">Αντίπαλος (<span id="opponentSymbolChoice">O</span>)</button>
+                </div>
+            </div>
+
+            <button class="modal-btn" id="startGameBtn">Έναρξη Παιχνιδιού</button>
+        </div>
+    </div>
     
     <script>
-        // Κύριο αντικείμενο του παιχνιδιού
         const Game = {
-            // Αρχικοποίηση μεταβλητών
             board: ['', '', '', '', '', '', '', '', ''],
-            currentPlayer: 'X',
             isGameActive: true,
-            playerSymbol: 'X',
+            playerSymbol: 'X', // Το σύμβολο που έχει επιλέξει ο χρήστης (X ή O)
             opponentType: 'player',
             difficultyLevel: 'medium',
             audioEnabled: true,
@@ -492,22 +581,97 @@
                 O: 0,
                 draws: 0
             },
+            playerNames: {
+                X: 'Παίκτης X',
+                O: 'Παίκτης O',
+                computer: 'Υπολογιστής'
+            },
+            firstPlayerChoice: 'player', // 'player' (ο χρήστης) ή 'opponent' (ο υπολογιστής)
+            currentPlayer: 'X', // Ο παίκτης που έχει σειρά να παίξει
             winningCombinations: [
                 [0, 1, 2], [3, 4, 5], [6, 7, 8],
                 [0, 3, 6], [1, 4, 7], [2, 5, 8],
                 [0, 4, 8], [2, 4, 6]
             ],
             
-            // Αρχικοποίηση παιχνιδιού
             init() {
                 this.cacheDom();
                 this.bindEvents();
                 this.createAudioElements();
+                this.loadSettings(); // Φόρτωση ρυθμίσεων από localStorage
                 this.render();
                 this.trackPageView();
+                // Θέτουμε αρχική δυσκολία "μεσαίο" ενεργή κατά την αρχικοποίηση
+                document.querySelector('.difficulty-btn[data-difficulty="medium"]').classList.add('active');
+                
+                // Εμφάνιση του αρχικού modal ρυθμίσεων
+                this.showSettingsModal();
+            },
+
+            // Φόρτωση ρυθμίσεων από localStorage
+            loadSettings() {
+                const savedNames = localStorage.getItem('playerNames');
+                if (savedNames) {
+                    this.playerNames = JSON.parse(savedNames);
+                    this.playerXNameInput.value = this.playerNames.X;
+                    this.playerONameInput.value = this.playerNames.O;
+                }
+
+                const savedSymbol = localStorage.getItem('playerSymbol');
+                if (savedSymbol) {
+                    this.playerSymbol = savedSymbol;
+                    this.symbolBtns.forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.getAttribute('data-symbol') === savedSymbol) {
+                            btn.classList.add('active');
+                        }
+                    });
+                }
+
+                const savedOpponent = localStorage.getItem('opponentType');
+                if (savedOpponent) {
+                    this.opponentType = savedOpponent;
+                    this.opponentBtns.forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.getAttribute('data-opponent') === savedOpponent) {
+                            btn.classList.add('active');
+                        }
+                    });
+                    if (this.opponentType === 'computer') {
+                        this.difficultySettings.style.display = 'flex';
+                    } else {
+                        this.difficultySettings.style.display = 'none';
+                    }
+                }
+
+                const savedDifficulty = localStorage.getItem('difficultyLevel');
+                if (savedDifficulty) {
+                    this.difficultyLevel = savedDifficulty;
+                    this.difficultyBtns.forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.getAttribute('data-difficulty') === savedDifficulty) {
+                            btn.classList.add('active');
+                        }
+                    });
+                }
+
+                const savedAudio = localStorage.getItem('audioEnabled');
+                if (savedAudio !== null) {
+                    this.audioEnabled = JSON.parse(savedAudio);
+                    this.audioToggle.textContent = this.audioEnabled ? '🔊' : '🔇';
+                    this.audioToggle.classList.toggle('muted', !this.audioEnabled);
+                }
+            },
+
+            // Αποθήκευση ρυθμίσεων στο localStorage
+            saveSettings() {
+                localStorage.setItem('playerNames', JSON.stringify(this.playerNames));
+                localStorage.setItem('playerSymbol', this.playerSymbol);
+                localStorage.setItem('opponentType', this.opponentType);
+                localStorage.setItem('difficultyLevel', this.difficultyLevel);
+                localStorage.setItem('audioEnabled', this.audioEnabled);
             },
             
-            // Google Analytics tracking
             trackPageView() {
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'page_view', {
@@ -526,7 +690,6 @@
                 }
             },
             
-            // Δημιουργία audio elements
             createAudioElements() {
                 this.sounds = {
                     move: this.createBeepSound(800, 0.1, 'sine'),
@@ -536,7 +699,6 @@
                 };
             },
             
-            // Δημιουργία beep ήχων με Web Audio API
             createBeepSound(frequency, duration, type = 'sine') {
                 return () => {
                     if (!this.audioEnabled) return;
@@ -558,12 +720,11 @@
                         oscillator.start(audioContext.currentTime);
                         oscillator.stop(audioContext.currentTime + duration);
                     } catch (error) {
-                        console.log('Audio not supported');
+                        console.log('Audio not supported or failed:', error);
                     }
                 };
             },
             
-            // Αποθήκευση αναφορών σε DOM στοιχεία
             cacheDom() {
                 this.boardElement = document.getElementById('board');
                 this.cells = document.querySelectorAll('.cell');
@@ -576,23 +737,40 @@
                 this.playerXScore = document.getElementById('player-x-score');
                 this.playerOScore = document.getElementById('player-o-score');
                 this.drawsScore = document.getElementById('draws');
-                this.modal = document.getElementById('gameModal');
-                this.modalTitle = document.getElementById('modalTitle');
-                this.modalMessage = document.getElementById('modalMessage');
+                this.playerXLabel = document.getElementById('player-x-label');
+                this.playerOLabel = document.getElementById('player-o-label');
+                
+                // Modals
+                this.gameEndModal = document.getElementById('gameEndModal');
+                this.gameEndModalTitle = document.getElementById('gameEndModalTitle');
+                this.gameEndModalMessage = document.getElementById('gameEndModalMessage');
                 this.newGameBtn = document.getElementById('newGameBtn');
                 this.continueBtn = document.getElementById('continueBtn');
+                
+                this.settingsModal = document.getElementById('settingsModal');
+                this.playerXNameInput = document.getElementById('playerXName');
+                this.playerONameInput = document.getElementById('playerOName');
+                this.playerONameGroup = document.getElementById('playerONameGroup');
+                this.startGameBtn = document.getElementById('startGameBtn');
+                this.firstPlayerSelectionGroup = document.getElementById('firstPlayerSelectionGroup');
+                this.mySymbolChoiceSpan = document.getElementById('mySymbolChoice');
+                this.opponentSymbolChoiceSpan = document.getElementById('opponentSymbolChoice');
+                this.firstPlayerChoiceBtns = document.querySelectorAll('.first-player-select .player-choice-btn');
+
                 this.audioToggle = document.getElementById('audioToggle');
             },
             
-            // Σύνδεση συμβάντων
             bindEvents() {
                 this.cells.forEach(cell => {
                     cell.addEventListener('click', () => this.handleCellClick(cell));
                 });
                 
-                this.restartBtn.addEventListener('click', () => this.restartGame());
-                this.newGameBtn.addEventListener('click', () => this.closeModalAndRestart());
-                this.continueBtn.addEventListener('click', () => this.closeModal());
+                this.restartBtn.addEventListener('click', () => this.showSettingsModal()); 
+                this.newGameBtn.addEventListener('click', () => {
+                    this.closeModal(this.gameEndModal);
+                    this.showSettingsModal(); 
+                });
+                this.continueBtn.addEventListener('click', () => this.closeModal(this.gameEndModal));
                 this.audioToggle.addEventListener('click', () => this.toggleAudio());
                 
                 this.symbolBtns.forEach(btn => {
@@ -607,26 +785,109 @@
                     btn.addEventListener('click', () => this.changeDifficulty(btn));
                 });
                 
+                this.startGameBtn.addEventListener('click', () => this.handleStartGame());
+
+                this.firstPlayerChoiceBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => this.selectFirstPlayer(e.currentTarget)); // Χρήση currentTarget
+                });
+
+                // Ενημέρωση των ονομάτων στην αρχική οθόνη
+                this.playerXNameInput.addEventListener('input', () => {
+                    this.playerNames.X = this.playerXNameInput.value.trim() || 'Παίκτης X';
+                    this.playerXLabel.textContent = this.playerNames.X;
+                });
+                this.playerONameInput.addEventListener('input', () => {
+                    this.playerNames.O = this.playerONameInput.value.trim() || 'Παίκτης O';
+                    this.playerOLabel.textContent = this.playerNames.O;
+                });
+                
                 // Κλείσιμο modal με ESC
                 document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && this.modal.style.display === 'block') {
-                        this.closeModal();
+                    if (e.key === 'Escape') {
+                        if (this.gameEndModal.style.display === 'flex') {
+                            this.closeModal(this.gameEndModal);
+                        }
                     }
                 });
             },
+
+            // Εμφάνιση modal ρυθμίσεων
+            showSettingsModal() {
+                this.settingsModal.style.display = 'flex'; 
+                this.isGameActive = false; 
+
+                // Ενημέρωση συμβόλων επιλογής πρώτου παίκτη
+                this.mySymbolChoiceSpan.textContent = this.playerSymbol;
+                this.opponentSymbolChoiceSpan.textContent = (this.playerSymbol === 'X' ? 'O' : 'X');
+
+                // Εμφάνιση/Απόκρυψη πεδίου ονόματος Player O
+                if (this.opponentType === 'computer') {
+                    this.playerONameGroup.style.display = 'none';
+                    this.firstPlayerSelectionGroup.style.display = 'flex'; 
+                    // Ενημέρωση ετικέτας "Παίκτης O" σε "Υπολογιστής" στο scoreboard
+                    this.playerOLabel.textContent = this.playerNames.computer; 
+                } else {
+                    this.playerONameGroup.style.display = 'flex';
+                    this.firstPlayerSelectionGroup.style.display = 'none'; 
+                    // Επαναφορά ετικέτας "Παίκτης O" στο scoreboard
+                    this.playerOLabel.textContent = this.playerNames.O;
+                }
+                
+                // Ενημέρωση ονομάτων στο scoreboard
+                this.playerXLabel.textContent = this.playerNames.X;
+                // Επαναφορά τιμής στο input αν έχει κρυφτεί και ξαναεμφανιστεί
+                if (this.opponentType === 'player') {
+                    this.playerONameInput.value = this.playerNames.O; 
+                }
+            },
+
+            // Κλείσιμο οποιουδήποτε modal
+            closeModal(modalElement) {
+                modalElement.style.display = 'none';
+            },
+
+            // Χειρισμός έναρξης παιχνιδιού από το modal ρυθμίσεων
+            handleStartGame() {
+                this.playerNames.X = this.playerXNameInput.value.trim() || 'Παίκτης X';
+                this.playerNames.O = this.playerONameInput.value.trim() || 'Παίκτης O';
+
+                // Επαναφορά του score label σε περίπτωση που είχε αλλάξει σε "Υπολογιστής"
+                if (this.opponentType === 'player') {
+                    this.playerOLabel.textContent = this.playerNames.O;
+                } else {
+                     this.playerOLabel.textContent = this.playerNames.computer;
+                }
+                this.playerXLabel.textContent = this.playerNames.X;
+
+                this.saveSettings(); 
+                this.closeModal(this.settingsModal);
+                this.restartGame(true); 
+            },
+
+            // Επιλογή ποιος παίζει πρώτος (για υπολογιστή)
+            selectFirstPlayer(btn) {
+                this.firstPlayerChoiceBtns.forEach(button => button.classList.remove('active'));
+                btn.classList.add('active');
+                this.firstPlayerChoice = btn.getAttribute('data-player-type');
+                this.trackGameEvent('first_player_choice', { choice: this.firstPlayerChoice });
+            },
             
-            // Toggle audio
             toggleAudio() {
                 this.audioEnabled = !this.audioEnabled;
                 this.audioToggle.textContent = this.audioEnabled ? '🔊' : '🔇';
                 this.audioToggle.classList.toggle('muted', !this.audioEnabled);
+                this.saveSettings(); 
                 this.trackGameEvent('audio_toggle', { enabled: this.audioEnabled });
             },
             
-            // Χειρισμός κλικ σε κελί
             handleCellClick(cell) {
                 const index = cell.getAttribute('data-index');
                 
+                // Αποτροπή κίνησης αν δεν είναι η σειρά του παίκτη
+                if (this.opponentType === 'computer' && this.currentPlayer !== this.playerSymbol) {
+                    return; 
+                }
+
                 if (this.board[index] === '' && this.isGameActive) {
                     this.makeMove(index, cell);
                     this.sounds.move();
@@ -638,16 +899,14 @@
                     } else {
                         this.changePlayer();
                         
-                        if (this.opponentType === 'computer' && 
-                            ((this.playerSymbol === 'X' && this.currentPlayer === 'O') || 
-                             (this.playerSymbol === 'O' && this.currentPlayer === 'X'))) {
+                        // Αν είναι παιχνίδι με υπολογιστή και είναι η σειρά του υπολογιστή
+                        if (this.opponentType === 'computer' && this.currentPlayer !== this.playerSymbol) {
                             setTimeout(() => this.computerMove(), 700);
                         }
                     }
                 }
             },
             
-            // Εκτέλεση κίνησης
             makeMove(index, cell) {
                 this.board[index] = this.currentPlayer;
                 cell.textContent = this.currentPlayer;
@@ -665,9 +924,10 @@
                 });
             },
             
-            // Κίνηση υπολογιστή
             computerMove() {
-                if (!this.isGameActive) return;
+                if (!this.isGameActive || (this.opponentType === 'computer' && this.currentPlayer === this.playerSymbol)) {
+                    return; 
+                }
                 
                 let index = this.findBestMove();
                 const cell = this.cells[index];
@@ -684,61 +944,66 @@
                 }
             },
             
-            // Εύρεση καλύτερης κίνησης για τον υπολογιστή
             findBestMove() {
-                // Έλεγχος για νίκη
+                const computerSymbol = this.currentPlayer;
+                const playerSymbol = (this.playerSymbol === 'X' ? 'O' : 'X'); // Το σύμβολο του ανθρώπινου παίκτη, ανεξάρτητα από το επιλεγμένο playerSymbol
+
+                // 1. Έλεγχος για νίκη του υπολογιστή
                 for (let i = 0; i < this.board.length; i++) {
                     if (this.board[i] === '') {
-                        this.board[i] = this.currentPlayer;
-                        if (this.checkWin(false)) {
-                            this.board[i] = '';
+                        this.board[i] = computerSymbol;
+                        if (this.checkWin(false, computerSymbol)) {
+                            this.board[i] = ''; 
                             return i;
                         }
-                        this.board[i] = '';
+                        this.board[i] = ''; 
                     }
                 }
                 
-                // Έλεγχος για μπλοκάρισμα
-                const opponent = this.currentPlayer === 'X' ? 'O' : 'X';
+                // 2. Έλεγχος για μπλοκάρισμα του παίκτη
                 for (let i = 0; i < this.board.length; i++) {
                     if (this.board[i] === '') {
-                        this.board[i] = opponent;
-                        if (this.checkWin(false, opponent)) {
-                            this.board[i] = '';
+                        this.board[i] = playerSymbol;
+                        if (this.checkWin(false, playerSymbol)) {
+                            this.board[i] = ''; 
                             return i;
                         }
-                        this.board[i] = '';
+                        this.board[i] = ''; 
                     }
                 }
                 
-                // Τυχαία κίνηση για εύκολο επίπεδο
-                if (this.difficultyLevel === 'easy' && Math.random() < 0.5) {
-                    const availableMoves = this.board
-                        .map((cell, index) => cell === '' ? index : null)
-                        .filter(index => index !== null);
-                    return availableMoves[Math.floor(Math.random() * availableMoves.length)];
-                }
-                
-                // Προτίμηση κέντρου
+                // 3. Προτίμηση κέντρου
                 if (this.board[4] === '') return 4;
                 
-                // Προτίμηση γωνιών για δύσκολο επίπεδο
-                if (this.difficultyLevel === 'hard') {
-                    const corners = [0, 2, 6, 8].filter(index => this.board[index] === '');
-                    if (corners.length > 0) {
+                // 4. Προτίμηση γωνιών
+                const corners = [0, 2, 6, 8].filter(index => this.board[index] === '');
+                if (corners.length > 0) {
+                    if (this.difficultyLevel === 'hard') {
                         return corners[Math.floor(Math.random() * corners.length)];
                     }
+                    if (this.difficultyLevel === 'medium' && Math.random() < 0.7) { 
+                         return corners[Math.floor(Math.random() * corners.length)];
+                    }
                 }
-                
-                // Τυχαία κίνηση
+
+                // 5. Προτίμηση πλευρών
+                const sides = [1, 3, 5, 7].filter(index => this.board[index] === '');
+                if (sides.length > 0 && this.difficultyLevel === 'hard') {
+                    return sides[Math.floor(Math.random() * sides.length)];
+                }
+
+                // 6. Τυχαία κίνηση (για εύκολο ή αν δεν υπάρχει καλύτερη)
                 const availableMoves = this.board
                     .map((cell, index) => cell === '' ? index : null)
                     .filter(index => index !== null);
                     
+                if (this.difficultyLevel === 'easy' || availableMoves.length === 0) {
+                    return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+                }
+                
                 return availableMoves[Math.floor(Math.random() * availableMoves.length)];
             },
             
-            // Έλεγχος για νίκη
             checkWin(markWinningCells = true, player = this.currentPlayer) {
                 let isWin = false;
                 let winningCombo = [];
@@ -763,49 +1028,60 @@
                 return isWin;
             },
             
-            // Έλεγχος για ισοπαλία
             checkDraw() {
                 return !this.board.includes('');
             },
             
-            // Αλλαγή παίκτη
             changePlayer() {
                 this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
                 this.updateStatus();
             },
             
-           // Ενημέρωση κατάστασης
             updateStatus() {
-                this.statusDisplay.textContent = `Σειρά του παίκτη: ${this.currentPlayer}`;
+                let statusText = '';
+                if (!this.isGameActive) {
+                    return;
+                } else if (this.opponentType === 'computer') {
+                    if (this.currentPlayer === this.playerSymbol) {
+                        statusText = `Σειρά του ${this.playerNames.X} (${this.playerSymbol})`;
+                    } else {
+                        const computerSymbol = (this.playerSymbol === 'X' ? 'O' : 'X');
+                        statusText = `Σειρά του ${this.playerNames.computer} (${computerSymbol})`;
+                    }
+                } else {
+                    const currentPlayerName = (this.currentPlayer === 'X' ? this.playerNames.X : this.playerNames.O);
+                    statusText = `Σειρά του ${currentPlayerName} (${this.currentPlayer})`;
+                }
+                this.statusDisplay.textContent = statusText;
             },
             
-            // Τέλος παιχνιδιού
             endGame(isDraw = false) {
                 this.isGameActive = false;
                 
                 if (isDraw) {
                     this.scores.draws++;
                     this.sounds.draw();
-                    this.showModal('Ισοπαλία!', 'Το παιχνίδι τελείωσε χωρίς νικητή.');
+                    this.showModal(this.gameEndModal, 'Ισοπαλία!', 'Το παιχνίδι τελείωσε χωρίς νικητή.');
                     this.trackGameEvent('game_end', { result: 'draw' });
                 } else {
                     this.scores[this.currentPlayer]++;
                     
-                    // Έλεγχος αν νίκησε ο παίκτης ή ο υπολογιστής
                     if (this.opponentType === 'computer') {
                         if (this.currentPlayer === this.playerSymbol) {
                             this.sounds.win();
-                            this.showModal('Συγχαρητήρια!', 'Κερδίσατε το παιχνίδι!');
+                            this.showModal(this.gameEndModal, 'Συγχαρητήρια!', `${this.playerNames.X} κέρδισε το παιχνίδι!`);
                             this.createConfetti();
                             this.trackGameEvent('game_end', { result: 'player_win' });
                         } else {
                             this.sounds.lose();
-                            this.showModal('Χάσατε!', 'Ο υπολογιστής κέρδισε το παιχνίδι.');
+                            const computerActualSymbol = (this.playerSymbol === 'X' ? 'O' : 'X');
+                            this.showModal(this.gameEndModal, 'Χάσατε!', `${this.playerNames.computer} (${computerActualSymbol}) κέρδισε το παιχνίδι.`);
                             this.trackGameEvent('game_end', { result: 'computer_win' });
                         }
                     } else {
                         this.sounds.win();
-                        this.showModal('Νίκη!', `Ο παίκτης ${this.currentPlayer} κέρδισε!`);
+                        const winnerName = (this.currentPlayer === 'X' ? this.playerNames.X : this.playerNames.O);
+                        this.showModal(this.gameEndModal, 'Νίκη!', `${winnerName} (${this.currentPlayer}) κέρδισε!`);
                         this.createConfetti();
                         this.trackGameEvent('game_end', { result: 'player_win', winner: this.currentPlayer });
                     }
@@ -814,25 +1090,15 @@
                 this.updateScoreboard();
             },
             
-            // Εμφάνιση modal
-            showModal(title, message) {
-                this.modalTitle.textContent = title;
-                this.modalMessage.textContent = message;
-                this.modal.style.display = 'block';
+            // Γενική συνάρτηση εμφάνισης modal
+            showModal(modalElement, title, message) {
+                if (title && message) { // Αν είναι gameEndModal
+                    modalElement.querySelector('h2').textContent = title;
+                    modalElement.querySelector('p').textContent = message;
+                }
+                modalElement.style.display = 'flex'; // Χρησιμοποιούμε flex για κεντράρισμα
             },
             
-            // Κλείσιμο modal
-            closeModal() {
-                this.modal.style.display = 'none';
-            },
-            
-            // Κλείσιμο modal και επανεκκίνηση
-            closeModalAndRestart() {
-                this.closeModal();
-                this.restartGame();
-            },
-            
-            // Δημιουργία κονφετί
             createConfetti() {
                 const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#f0932b', '#eb4d4b', '#6c5ce7'];
                 
@@ -854,31 +1120,59 @@
                 }
             },
             
-            // Επανεκκίνηση παιχνιδιού
-            restartGame() {
+            restartGame(fromSettings = false) {
                 this.board = ['', '', '', '', '', '', '', '', ''];
-                this.currentPlayer = 'X';
                 this.isGameActive = true;
                 
+                if (fromSettings) {
+                    if (this.opponentType === 'computer') {
+                        if (this.firstPlayerChoice === 'player') {
+                            this.currentPlayer = this.playerSymbol;
+                        } else { // opponent (computer) plays first
+                            this.currentPlayer = (this.playerSymbol === 'X' ? 'O' : 'X');
+                        }
+                    } else { // player vs player
+                        this.currentPlayer = 'X'; // Player vs Player always starts with X
+                    }
+                    this.resetScores(); // Reset scores only when starting a completely new game from settings
+                } else {
+                    // For continue, keep current player (for alternate starting turn) or default to X
+                    // Current player logic for continuing a round is already handled by changePlayer()
+                    // If simply restarting, it defaults to X.
+                    this.currentPlayer = 'X'; 
+                }
+
                 this.cells.forEach(cell => {
                     cell.textContent = '';
                     cell.classList.remove('player-x', 'player-o', 'winning-cell');
                 });
                 
                 this.updateStatus();
-                this.trackGameEvent('game_restart');
+                this.trackGameEvent('game_restart', { from_settings: fromSettings });
+
+                // If computer opponent and it's the computer's turn to start
+                if (this.opponentType === 'computer' && this.currentPlayer !== this.playerSymbol) {
+                    setTimeout(() => this.computerMove(), 700);
+                }
             },
             
-            // Αλλαγή συμβόλου παίκτη
+            resetScores() {
+                this.scores = { X: 0, O: 0, draws: 0 };
+                this.updateScoreboard();
+                this.trackGameEvent('scores_reset');
+            },
+
             changeSymbol(btn) {
                 this.symbolBtns.forEach(button => button.classList.remove('active'));
                 btn.classList.add('active');
                 this.playerSymbol = btn.getAttribute('data-symbol');
-                this.restartGame();
+                this.mySymbolChoiceSpan.textContent = this.playerSymbol;
+                this.opponentSymbolChoiceSpan.textContent = (this.playerSymbol === 'X' ? 'O' : 'X');
+                this.saveSettings();
                 this.trackGameEvent('symbol_change', { symbol: this.playerSymbol });
+                // Δεν καλούμε restartGame εδώ, περιμένουμε το startGameBtn
             },
             
-            // Αλλαγή αντιπάλου
             changeOpponent(btn) {
                 this.opponentBtns.forEach(button => button.classList.remove('active'));
                 btn.classList.add('active');
@@ -886,44 +1180,51 @@
                 
                 if (this.opponentType === 'computer') {
                     this.difficultySettings.style.display = 'flex';
+                    this.playerONameGroup.style.display = 'none'; // Hide Player O name input
+                    this.firstPlayerSelectionGroup.style.display = 'flex'; // Show first player choice
+                    this.playerOLabel.textContent = this.playerNames.computer; // Update scoreboard label
                 } else {
                     this.difficultySettings.style.display = 'none';
+                    this.playerONameGroup.style.display = 'flex'; // Show Player O name input
+                    this.firstPlayerSelectionGroup.style.display = 'none'; // Hide first player choice
+                    this.playerOLabel.textContent = this.playerNames.O; // Restore scoreboard label
                 }
-                
-                this.restartGame();
+                this.saveSettings();
                 this.trackGameEvent('opponent_change', { opponent: this.opponentType });
+                // Δεν καλούμε restartGame εδώ, περιμένουμε το startGameBtn
             },
             
-            // Αλλαγή δυσκολίας
             changeDifficulty(btn) {
                 this.difficultyBtns.forEach(button => button.classList.remove('active'));
                 btn.classList.add('active');
                 this.difficultyLevel = btn.getAttribute('data-difficulty');
-                this.restartGame();
+                this.saveSettings();
                 this.trackGameEvent('difficulty_change', { difficulty: this.difficultyLevel });
+                // Δεν καλούμε restartGame εδώ, περιμένουμε το startGameBtn
             },
             
-            // Ενημέρωση πίνακα βαθμολογίας
             updateScoreboard() {
                 this.playerXScore.textContent = this.scores.X;
                 this.playerOScore.textContent = this.scores.O;
                 this.drawsScore.textContent = this.scores.draws;
+                // Ενημέρωση των labels με τα ονόματα
+                this.playerXLabel.textContent = this.playerNames.X;
+                if (this.opponentType === 'computer') {
+                    this.playerOLabel.textContent = this.playerNames.computer;
+                } else {
+                    this.playerOLabel.textContent = this.playerNames.O;
+                }
             },
             
-            // Render αρχικής κατάστασης
             render() {
                 this.updateStatus();
                 this.updateScoreboard();
             }
         };
         
-        // Αρχικοποίηση παιχνιδιού όταν φορτώνεται η σελίδα
         document.addEventListener('DOMContentLoaded', () => {
             Game.init();
         });
     </script>
-    <footer>
-        <p><ul>&copy; 2025 Dimitrios Gallis. All rights reserved.</ul></p>
-    </footer>
 </body>
 </html>
